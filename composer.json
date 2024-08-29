@@ -15,7 +15,8 @@
     },
     "require": {
         "php": "~8.3",
-        "prinsfrank/validation-attributes": "^0.0.1"
+        "prinsfrank/validation-attributes": "^0.0.1",
+        "prinsfrank/enums": "^1.2"
     },
     "require-dev": {
         "phpstan/phpstan": "^1.11",
