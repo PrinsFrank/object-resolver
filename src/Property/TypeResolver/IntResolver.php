@@ -1,5 +1,7 @@
 <?php declare(strict_types=1);
 
+namespace PrinsFrank\Validatory\Property\TypeResolver;
+
 /** @implements TypeResolver<int> */
 class IntResolver implements TypeResolver {
     #[Override]

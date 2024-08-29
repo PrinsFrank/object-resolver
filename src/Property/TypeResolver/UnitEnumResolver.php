@@ -1,5 +1,7 @@
 <?php declare(strict_types=1);
 
+namespace PrinsFrank\Validatory\Property\TypeResolver;
+
 use PrinsFrank\Enums\Exception\EnumException;
 
 /**

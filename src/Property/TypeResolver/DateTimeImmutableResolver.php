@@ -1,5 +1,7 @@
 <?php declare(strict_types=1);
 
+namespace PrinsFrank\Validatory\Property\TypeResolver;
+
 /** @implements TypeResolver<DateTimeImmutable> */
 class DateTimeImmutableResolver implements TypeResolver {
     #[Override]
