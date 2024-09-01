@@ -1,8 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace PrinsFrank\Validatory\Property\TypeResolver;
+namespace PrinsFrank\Validatory\Parameter\TypeResolver;
 
 use Override;
+use PrinsFrank\Validatory\ObjectResolver;
 
 /** @implements TypeResolver<bool> */
 class BoolResolver implements TypeResolver {
@@ -12,7 +13,7 @@ class BoolResolver implements TypeResolver {
     }
 
     #[Override]
-    public function resolveValue(string $type, mixed $value): ?bool {
+    public function resolveValue(string $type, mixed $value, ObjectResolver $objectResolver): ?bool {
         if (is_bool($value)) {
             return $value;
         }

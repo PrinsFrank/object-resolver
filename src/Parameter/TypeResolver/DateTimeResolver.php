@@ -1,9 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace PrinsFrank\Validatory\Property\TypeResolver;
+namespace PrinsFrank\Validatory\Parameter\TypeResolver;
 
 use DateTime;
 use Override;
+use PrinsFrank\Validatory\ObjectResolver;
 
 /** @implements TypeResolver<DateTime> */
 class DateTimeResolver implements TypeResolver {
@@ -13,7 +14,7 @@ class DateTimeResolver implements TypeResolver {
     }
 
     #[Override]
-    public function resolveValue(string $type, mixed $value): mixed {
+    public function resolveValue(string $type, mixed $value, ObjectResolver $objectResolver): mixed {
         if ($value instanceof DateTime) {
             return $value;
         }
