@@ -1,13 +1,15 @@
 <?php declare(strict_types=1);
 
-namespace PrinsFrank\Validatory\Parameter;
+namespace PrinsFrank\ObjectResolver\Parameter;
 
-use InvalidArgumentException;
-use PrinsFrank\Validatory\ObjectResolver;
-use PrinsFrank\Validatory\Parameter\TypeResolver\TypeResolver;
-use PrinsFrank\Validatory\Parameter\TypeResolver\TypeResolverProvider;
+use PrinsFrank\ObjectResolver\Exception\IntersectionTypeNotSupportedException;
+use PrinsFrank\ObjectResolver\Exception\MissingParameterValueException;
+use PrinsFrank\ObjectResolver\Exception\ParameterDoesntHaveTypeException;
+use PrinsFrank\ObjectResolver\Exception\ParameterResolvesToMultipleTypesException;
+use PrinsFrank\ObjectResolver\ObjectResolver;
+use PrinsFrank\ObjectResolver\Parameter\TypeResolver\TypeResolver;
+use PrinsFrank\ObjectResolver\Parameter\TypeResolver\TypeResolverProvider;
 use ReflectionIntersectionType;
-use ReflectionNamedType;
 use ReflectionParameter;
 
 readonly class ParameterResolver {
@@ -19,22 +21,25 @@ readonly class ParameterResolver {
         $this->typeResolverProvider = $typeResolverProvider ?? new TypeResolverProvider();
     }
 
+    /**
+     * @param array<string, mixed> $params
+     * @throws IntersectionTypeNotSupportedException
+     * @throws MissingParameterValueException
+     * @throws ParameterDoesntHaveTypeException
+     * @throws ParameterResolvesToMultipleTypesException
+     */
     public function resolve(ReflectionParameter $reflectionParameter, array $params, ObjectResolver $objectResolver): mixed {
         if (($parameterType = $reflectionParameter->getType()) === null) {
-            throw new InvalidArgumentException('Unable to resolve parameters without a type');
+            throw new ParameterDoesntHaveTypeException($reflectionParameter->getName());
         }
 
         if ($parameterType instanceof ReflectionIntersectionType) {
-            throw new InvalidArgumentException('Resolving intersection types is currently not supported');
+            throw new IntersectionTypeNotSupportedException($reflectionParameter->getName());
         }
 
         $value = $params[$reflectionParameter->getName()] ?? null;
         if ($value === null && $reflectionParameter->isDefaultValueAvailable()) {
             return $reflectionParameter->getDefaultValue();
-        }
-
-        if ($value === null && $reflectionParameter->allowsNull() === false) {
-            throw new InvalidArgumentException();
         }
 
         $valueOptions = [];
@@ -51,11 +56,18 @@ readonly class ParameterResolver {
         }
 
         if (count($valueOptions) > 1) {
-            $valueOptions = array_values(array_filter($valueOptions, fn (mixed $value) => $value !== null) ?? [null]);
+            $valueOptions = array_values(array_filter($valueOptions, fn (mixed $value) => $value !== null));
+            if ($valueOptions === []) {
+                $valueOptions = [null];
+            }
         }
 
-        if (count($valueOptions) !== 1 || array_key_exists(0, $valueOptions) === false) {
-            throw new InvalidArgumentException(sprintf('Value for parameter $%s could not be resolved, as it resulted in %d possible values', $reflectionParameter->getName(), count($valueOptions)));
+        if (count($valueOptions) !== 1) {
+            throw new ParameterResolvesToMultipleTypesException($reflectionParameter->getName(), $value, $valueOptions);
+        }
+
+        if ($valueOptions[0] === null && $reflectionParameter->allowsNull() === false) {
+            throw new MissingParameterValueException($reflectionParameter->getName());
         }
 
         return $valueOptions[0];

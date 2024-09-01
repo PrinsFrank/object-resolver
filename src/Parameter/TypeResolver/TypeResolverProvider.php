@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace PrinsFrank\Validatory\Parameter\TypeResolver;
+namespace PrinsFrank\ObjectResolver\Parameter\TypeResolver;
 
-use InvalidArgumentException;
+use PrinsFrank\ObjectResolver\Exception\InvalidTypeResolverException;
 
 class TypeResolverProvider {
     /** @param array<class-string<TypeResolver<mixed>>> $typeResolvers */
@@ -28,11 +28,11 @@ class TypeResolverProvider {
 
     /**
      * @param class-string<TypeResolver<mixed>> $typeResolver
-     * @throws InvalidArgumentException
+     * @throws InvalidTypeResolverException
      */
     public function add(string $typeResolver): void {
         if (is_a($typeResolver, TypeResolver::class, true) === false) {
-            throw new InvalidArgumentException(sprintf('%s is not a TypeResolver', $typeResolver));
+            throw new InvalidTypeResolverException($typeResolver);
         }
 
         $this->typeResolvers[] = $typeResolver;

@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace PrinsFrank\Validatory\Parameter\TypeResolver;
+namespace PrinsFrank\ObjectResolver\Parameter\TypeResolver;
 
 use Override;
-use PrinsFrank\Validatory\ObjectResolver;
+use PrinsFrank\ObjectResolver\ObjectResolver;
 
 /** @implements TypeResolver<string> */
 class StringResolver implements TypeResolver {
@@ -16,10 +16,6 @@ class StringResolver implements TypeResolver {
     public function resolveValue(string $type, mixed $value, ObjectResolver $objectResolver): ?string {
         if (is_string($value)) {
             return $value;
-        }
-
-        if (is_int($value)) {
-            return (string) $value;
         }
 
         return null;

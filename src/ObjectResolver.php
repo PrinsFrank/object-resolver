@@ -1,10 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace PrinsFrank\Validatory;
+namespace PrinsFrank\ObjectResolver;
 
-use InvalidArgumentException;
-use PrinsFrank\Validatory\Parameter\ParameterResolver;
-use PrinsFrank\Validatory\Parameter\TypeResolver\TypeResolverProvider;
+use PrinsFrank\ObjectResolver\Exception\ClassDoesNotExistException;
+use PrinsFrank\ObjectResolver\Exception\ClassDoesNotHaveConstructorException;
+use PrinsFrank\ObjectResolver\Exception\ObjectResolverException;
+use PrinsFrank\ObjectResolver\Parameter\ParameterResolver;
+use PrinsFrank\ObjectResolver\Parameter\TypeResolver\TypeResolverProvider;
 use ReflectionMethod;
 use Throwable;
 
@@ -21,12 +23,12 @@ readonly class ObjectResolver {
      * @template T of object
      * @param class-string<T> $FQN
      * @param array<string, mixed> $params
-     * @throws InvalidArgumentException
+     * @throws ObjectResolverException
      * @return T
      */
     public function resolveFromParams(string $FQN, array $params): object {
         if (class_exists($FQN) === false) {
-            throw new InvalidArgumentException(sprintf('Class with FQN %s doesn\'t exist or cannot be found by the autoloader', $FQN));
+            throw new ClassDoesNotExistException($FQN);
         }
 
         if (method_exists($FQN, '__construct') === false) {
@@ -36,7 +38,7 @@ readonly class ObjectResolver {
         try {
             $reflectionMethod = new ReflectionMethod($FQN, '__construct');
         } catch (Throwable) {
-            throw new InvalidArgumentException(sprintf('Class %s doesn\'t have a constructor to resolve', $FQN));
+            throw new ClassDoesNotHaveConstructorException($FQN);
         }
 
         $resolvedParams = [];

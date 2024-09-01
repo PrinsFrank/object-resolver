@@ -1,59 +1,134 @@
 <?php declare(strict_types=1);
 
-namespace PrinsFrank\Validatory\Tests\Integration;
+namespace PrinsFrank\ObjectResolver\Tests\Integration;
 
-use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use PrinsFrank\Validatory\ObjectResolver;
+use PrinsFrank\ObjectResolver\Exception\ObjectResolverException;
+use PrinsFrank\ObjectResolver\ObjectResolver;
+use PrinsFrank\ObjectResolver\Tests\fixtures\ObjectWithBackedEnumParam;
+use PrinsFrank\ObjectResolver\Tests\fixtures\ObjectWithBoolParam;
+use PrinsFrank\ObjectResolver\Tests\fixtures\ObjectWithComplexUnionParam;
+use PrinsFrank\ObjectResolver\Tests\fixtures\ObjectWithFloatParam;
+use PrinsFrank\ObjectResolver\Tests\fixtures\ObjectWithIntParam;
+use PrinsFrank\ObjectResolver\Tests\fixtures\ObjectWithStringParam;
+use PrinsFrank\ObjectResolver\Tests\fixtures\ObjectWithUnitEnumParam;
+use PrinsFrank\ObjectResolver\Tests\fixtures\util\BackedEnum;
+use PrinsFrank\ObjectResolver\Tests\fixtures\util\UnitEnum;
 
 #[CoversClass(ObjectResolver::class)]
 class ObjectResolverTest extends TestCase {
-    /** @throws InvalidArgumentException */
-    public function testResolvesObject(): void {
-        $resolvedObject = (new ObjectResolver())
-            ->resolveFromParams(TestA::class, ['nrOfPeople' => 3]);
+    /** @throws ObjectResolverException */
+    public function testResolvesBackedEnumByValue(): void {
+        $resolvedValue = (new ObjectResolver())
+            ->resolveFromParams(ObjectWithBackedEnumParam::class, ['backedEnum' => 'foo']);
 
-        static::assertSame(3, $resolvedObject->nrOfPeople);
+        static::assertSame(BackedEnum::HELLO, $resolvedValue->backedEnum);
     }
 
-    public function testResolvesNestedObject(): void {
-        $resolvedObject = (new ObjectResolver())
-            ->resolveFromParams(TestB::class, ['foo' => ['nrOfPeople' => 3]]);
+    /** @throws ObjectResolverException */
+    public function testResolvesBackedEnumByName(): void {
+        $resolvedValue = (new ObjectResolver())
+            ->resolveFromParams(ObjectWithBackedEnumParam::class, ['backedEnum' => 'HELLO']);
 
-        static::assertSame(3, $resolvedObject->foo->nrOfPeople);
+        static::assertSame(BackedEnum::HELLO, $resolvedValue->backedEnum);
     }
 
-    public function testResolvesUnionObjectWithOneValidOption(): void {
-        $resolvedObject = (new ObjectResolver())
-            ->resolveFromParams(TestC::class, ['bar' => 42]);
+    /** @throws ObjectResolverException */
+    public function testResolvesBoolValue(): void {
+        $resolvedValue = (new ObjectResolver())
+            ->resolveFromParams(ObjectWithBoolParam::class, ['isTrue' => true]);
 
-        static::assertSame(42, $resolvedObject->bar);
+        static::assertTrue($resolvedValue->isTrue);
 
-        $resolvedObject = (new ObjectResolver())
-            ->resolveFromParams(TestC::class, ['bar' => ['nrOfPeople' => 42]]);
+        $resolvedValue = (new ObjectResolver())
+            ->resolveFromParams(ObjectWithBoolParam::class, ['isTrue' => 'true']);
 
-        static::assertSame(42, $resolvedObject->bar->nrOfPeople);
+        static::assertTrue($resolvedValue->isTrue);
+
+        $resolvedValue = (new ObjectResolver())
+            ->resolveFromParams(ObjectWithBoolParam::class, ['isTrue' => '1']);
+
+        static::assertTrue($resolvedValue->isTrue);
+
+        $resolvedValue = (new ObjectResolver())
+            ->resolveFromParams(ObjectWithBoolParam::class, ['isTrue' => false]);
+
+        static::assertFalse($resolvedValue->isTrue);
+
+        $resolvedValue = (new ObjectResolver())
+            ->resolveFromParams(ObjectWithBoolParam::class, ['isTrue' => 'false']);
+
+        static::assertFalse($resolvedValue->isTrue);
+
+        $resolvedValue = (new ObjectResolver())
+            ->resolveFromParams(ObjectWithBoolParam::class, ['isTrue' => '0']);
+
+        static::assertFalse($resolvedValue->isTrue);
     }
-}
 
-class TestA {
-    public function __construct(
-        public int $nrOfPeople,
-    ) {
+    /** @throws ObjectResolverException */
+    public function testFloatValue(): void {
+        $resolvedValue = (new ObjectResolver())
+            ->resolveFromParams(ObjectWithFloatParam::class, ['value' => 42]);
+
+        static::assertSame(42.0, $resolvedValue->value);
+
+        $resolvedValue = (new ObjectResolver())
+            ->resolveFromParams(ObjectWithFloatParam::class, ['value' => 42.0]);
+
+        static::assertSame(42.0, $resolvedValue->value);
+
+        $resolvedValue = (new ObjectResolver())
+            ->resolveFromParams(ObjectWithFloatParam::class, ['value' => '42']);
+
+        static::assertSame(42.0, $resolvedValue->value);
+
+        $resolvedValue = (new ObjectResolver())
+            ->resolveFromParams(ObjectWithFloatParam::class, ['value' => '42.0']);
+
+        static::assertSame(42.0, $resolvedValue->value);
     }
-}
 
-class TestB {
-    public function __construct(
-        public TestA $foo,
-    ) {
+    /** @throws ObjectResolverException */
+    public function testIntValue(): void {
+        $resolvedValue = (new ObjectResolver())
+            ->resolveFromParams(ObjectWithIntParam::class, ['value' => 42]);
+
+        static::assertSame(42, $resolvedValue->value);
+
+        $resolvedValue = (new ObjectResolver())
+            ->resolveFromParams(ObjectWithIntParam::class, ['value' => '42']);
+
+        static::assertSame(42, $resolvedValue->value);
     }
-}
 
-class TestC {
-    public function __construct(
-        public int|TestA $bar,
-    ) {
+    /** @throws ObjectResolverException */
+    public function testStringValue(): void {
+        $resolvedValue = (new ObjectResolver())
+            ->resolveFromParams(ObjectWithStringParam::class, ['value' => 'foo']);
+
+        static::assertSame('foo', $resolvedValue->value);
+    }
+
+    /** @throws ObjectResolverException */
+    public function testResolvesUnitEnumByName(): void {
+        $resolvedValue = (new ObjectResolver())
+            ->resolveFromParams(ObjectWithUnitEnumParam::class, ['unitEnum' => 'HELLO']);
+
+        static::assertSame(UnitEnum::HELLO, $resolvedValue->unitEnum);
+    }
+
+    /** @throws ObjectResolverException */
+    public function testResolvesComplexUnionType(): void {
+        $resolvedValue = (new ObjectResolver())
+            ->resolveFromParams(ObjectWithComplexUnionParam::class, ['value' => 'HELLO']);
+
+        static::assertSame(UnitEnum::HELLO, $resolvedValue->value);
+
+        $resolvedValue = (new ObjectResolver())
+            ->resolveFromParams(ObjectWithComplexUnionParam::class, ['value' => 42.0]);
+
+        static::assertSame(42.0, $resolvedValue->value);
     }
 }

@@ -1,12 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace PrinsFrank\Validatory\Parameter\TypeResolver;
+namespace PrinsFrank\ObjectResolver\Parameter\TypeResolver;
 
 use BackedEnum;
-use InvalidArgumentException;
 use Override;
 use PrinsFrank\Enums\Exception\EnumException;
-use PrinsFrank\Validatory\ObjectResolver;
+use PrinsFrank\ObjectResolver\Exception\ShouldNotHappenException;
+use PrinsFrank\ObjectResolver\ObjectResolver;
 
 /** @implements TypeResolver<BackedEnum> */
 class BackedEnumResolver implements TypeResolver {
@@ -15,14 +15,11 @@ class BackedEnumResolver implements TypeResolver {
         return is_a($type, BackedEnum::class, true);
     }
 
-    /**
-     * @param class-string<BackedEnum>|string $type
-     * @throws InvalidArgumentException
-     */
+    /** @param class-string<BackedEnum>|string $type */
     #[Override]
     public function resolveValue(string $type, mixed $value, ObjectResolver $objectResolver): ?BackedEnum {
         if (is_a($type, BackedEnum::class, true) === false) {
-            throw new InvalidArgumentException();
+            throw new ShouldNotHappenException();
         }
 
         if (is_object($value) && is_a($value, $type, true)) {

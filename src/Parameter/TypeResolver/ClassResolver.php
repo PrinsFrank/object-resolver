@@ -1,12 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace PrinsFrank\Validatory\Parameter\TypeResolver;
+namespace PrinsFrank\ObjectResolver\Parameter\TypeResolver;
 
 use BackedEnum;
 use DateTime;
 use DateTimeImmutable;
 use Override;
-use PrinsFrank\Validatory\ObjectResolver;
+use PrinsFrank\ObjectResolver\Exception\ObjectResolverException;
+use PrinsFrank\ObjectResolver\ObjectResolver;
 use UnitEnum;
 
 /** @implements TypeResolver<object> */
@@ -20,10 +21,13 @@ class ClassResolver implements TypeResolver {
             && is_a($type, UnitEnum::class, true) === false;
     }
 
-    /** @param class-string<object> $type */
+    /**
+     * @param class-string<object>|string $type
+     * @throws ObjectResolverException
+     */
     #[Override]
     public function resolveValue(string $type, mixed $value, ObjectResolver $objectResolver): ?object {
-        if (is_array($value) === false) {
+        if (is_array($value) === false || array_is_list($value)) {
             return null;
         }
 

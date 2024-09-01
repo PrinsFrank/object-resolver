@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace PrinsFrank\Validatory\Parameter\TypeResolver;
+namespace PrinsFrank\ObjectResolver\Parameter\TypeResolver;
 
 use Override;
-use PrinsFrank\Validatory\ObjectResolver;
+use PrinsFrank\ObjectResolver\ObjectResolver;
 
 /** @implements TypeResolver<float> */
 class FloatResolver implements TypeResolver {
@@ -19,6 +19,7 @@ class FloatResolver implements TypeResolver {
         }
 
         if ((is_string($value) && (string) (float) $value === $value)
+            || (is_string($value) && (float) $value . '.0' === $value)
             || (is_int($value) && (int) (float) $value === $value)) {
             return (float) $value;
         }

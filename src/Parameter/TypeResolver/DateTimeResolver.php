@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace PrinsFrank\Validatory\Parameter\TypeResolver;
+namespace PrinsFrank\ObjectResolver\Parameter\TypeResolver;
 
 use DateTime;
 use Override;
-use PrinsFrank\Validatory\ObjectResolver;
+use PrinsFrank\ObjectResolver\ObjectResolver;
 
 /** @implements TypeResolver<DateTime> */
 class DateTimeResolver implements TypeResolver {

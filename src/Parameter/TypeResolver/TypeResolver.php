@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace PrinsFrank\Validatory\Parameter\TypeResolver;
+namespace PrinsFrank\ObjectResolver\Parameter\TypeResolver;
 
-use PrinsFrank\Validatory\ObjectResolver;
+use PrinsFrank\ObjectResolver\ObjectResolver;
 
 /** @template T */
 interface TypeResolver {

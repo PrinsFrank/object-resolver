@@ -1,16 +1,16 @@
 {
-    "name": "prinsfrank/validatory",
-    "description": "Validatory",
+    "name": "prinsfrank/object-resolver",
+    "description": "From arrays/requests/json to typed and validated objects with ease",
     "type": "library",
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "PrinsFrank\\Validatory\\": "src/"
+            "PrinsFrank\\ObjectResolver\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "PrinsFrank\\Validatory\\Tests\\": "tests/"
+            "PrinsFrank\\ObjectResolver\\Tests\\": "tests/"
         }
     },
     "require": {
