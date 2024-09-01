@@ -2,6 +2,9 @@
 
 namespace PrinsFrank\Validatory\Property\TypeResolver;
 
+use DateTimeImmutable;
+use Override;
+
 /** @implements TypeResolver<DateTimeImmutable> */
 class DateTimeImmutableResolver implements TypeResolver {
     #[Override]

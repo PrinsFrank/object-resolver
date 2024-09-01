@@ -2,6 +2,8 @@
 
 namespace PrinsFrank\Validatory\Property\TypeResolver;
 
+use Override;
+
 /** @implements TypeResolver<int> */
 class IntResolver implements TypeResolver {
     #[Override]

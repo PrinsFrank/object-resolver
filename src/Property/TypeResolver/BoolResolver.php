@@ -2,6 +2,8 @@
 
 namespace PrinsFrank\Validatory\Property\TypeResolver;
 
+use Override;
+
 /** @implements TypeResolver<bool> */
 class BoolResolver implements TypeResolver {
     #[Override]
