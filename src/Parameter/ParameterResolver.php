@@ -2,6 +2,7 @@
 
 namespace PrinsFrank\ObjectResolver\Parameter;
 
+use PrinsFrank\ObjectResolver\Casing\Casing;
 use PrinsFrank\ObjectResolver\Exception\IntersectionTypeNotSupportedException;
 use PrinsFrank\ObjectResolver\Exception\MissingParameterValueException;
 use PrinsFrank\ObjectResolver\Exception\ParameterDoesntHaveTypeException;
@@ -13,12 +14,9 @@ use ReflectionIntersectionType;
 use ReflectionParameter;
 
 readonly class ParameterResolver {
-    private TypeResolverProvider $typeResolverProvider;
-
     public function __construct(
-        ?TypeResolverProvider $typeResolverProvider = null,
+        private ?TypeResolverProvider $typeResolverProvider,
     ) {
-        $this->typeResolverProvider = $typeResolverProvider ?? new TypeResolverProvider();
     }
 
     /**
