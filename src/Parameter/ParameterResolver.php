@@ -2,7 +2,6 @@
 
 namespace PrinsFrank\ObjectResolver\Parameter;
 
-use PrinsFrank\ObjectResolver\Casing\Casing;
 use PrinsFrank\ObjectResolver\Exception\IntersectionTypeNotSupportedException;
 use PrinsFrank\ObjectResolver\Exception\MissingParameterValueException;
 use PrinsFrank\ObjectResolver\Exception\ParameterDoesntHaveTypeException;

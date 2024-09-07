@@ -26,7 +26,7 @@ enum Casing {
             throw new ShouldNotHappenException();
         }
 
-        $parts = array_map(fn(string $part) => strtolower($part), $parts);
+        $parts = array_map(fn (string $part) => strtolower($part), $parts);
         $parts = match($to) {
             self::camel => self::partsToCamel($parts),
             self::pascal => array_map(fn (string $part) => ucfirst($part), $parts),
