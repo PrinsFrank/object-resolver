@@ -64,7 +64,11 @@ readonly class ParameterResolver {
             throw new ParameterResolvesToMultipleTypesException($reflectionParameter->getName(), $value, $valueOptions);
         }
 
-        if ($valueOptions[0] === null && $reflectionParameter->allowsNull() === false) {
+        if (count($valueOptions) === 0 || $valueOptions[0] === null) {
+            if ($reflectionParameter->allowsNull() === true) {
+                return null;
+            }
+
             throw new MissingParameterValueException($reflectionParameter->getName());
         }
 
