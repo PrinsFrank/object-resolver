@@ -3,7 +3,7 @@
     <img src="https://github.com/PrinsFrank/object-resolver/raw/main/docs/images/banner_light.png" alt="Banner">
 </picture>
 
-# object-resolver
+# Object Resolver
 
 [![GitHub](https://img.shields.io/github/license/prinsfrank/object-resolver)](https://github.com/PrinsFrank/object-resolver/blob/main/LICENSE)
 [![PHP Version Support](https://img.shields.io/packagist/php-v/prinsfrank/object-resolver)](https://github.com/PrinsFrank/object-resolver/blob/main/composer.json)
@@ -13,3 +13,77 @@
 
 **Resolve objects from data from requests, json etc**
 
+## Setup
+
+> **Note**
+> Make sure you are running PHP 8.3 or higher to use this package
+
+To start right away, run the following command in your composer project;
+
+```composer require prinsfrank/object-resolver```
+
+Or for development only;
+
+```composer require prinsfrank/object-resolver --dev```
+
+# Use cases
+
+## Handling incoming requests
+
+Given a simple login controller, we have the following request object:
+
+```php
+<?php declare(strict_types=1);
+
+readonly class LogInRequest {
+    public function __construct(
+        #[SensitiveParameter] private string $email,
+        #[SensitiveParameter] private string $password,
+    ) {
+    }
+}
+```
+
+With a controller that looks like this:
+
+```php
+<?php declare(strict_types=1);
+
+readonly class LogInController {
+    public function __invoke(LogInRequest $logInRequest){
+        // Handle authentication
+    }
+}
+```
+
+We somehow need to automatically wire the incoming request based on the request data. That's where this package comes in!
+
+If there is a container available, we can then add a dynamic abstract concrete binding:
+
+```php
+$resolvedSet->add(
+    new AbstractConcrete(
+        $identifier,
+        fn (ObjectResolver $objectResolver, Request $request) => $objectResolver->resolveFromParams($identifier, $request->params()),
+    )
+);
+```
+
+## Casing conversion
+
+Because code conventions between different tech stacks might differ, it's possible to automatically convert between different casings.
+
+Let's say there's a form in HTML that has name `user_name`, but in the backend our model has parameter `$userName`. This can be automatically converted, by supplying the parameters `$enforcePropertyNameCasing` and `$convertFromParamKeyCasing`:
+
+```php
+$resolvedSet->add(
+    new Concrete(
+        $identifier,
+        fn () => new ObjectResolver(Casing::camel, Casing::snake)
+    )
+);
+```
+
+## Json from APIs etc
+
+TODO: write documentation
