@@ -14,7 +14,7 @@ use ReflectionParameter;
 
 readonly class ParameterResolver {
     public function __construct(
-        private ?TypeResolverProvider $typeResolverProvider,
+        private TypeResolverProvider $typeResolverProvider,
     ) {
     }
 
