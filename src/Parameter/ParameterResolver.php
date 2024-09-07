@@ -36,6 +36,7 @@ readonly class ParameterResolver {
 
         $value = $params[$reflectionParameter->getName()] ?? null;
         if ($value === null && $reflectionParameter->isDefaultValueAvailable()) {
+            /** @phpstan-ignore missingType.checkedException */
             return $reflectionParameter->getDefaultValue();
         }
 
