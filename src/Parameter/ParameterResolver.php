@@ -60,7 +60,7 @@ readonly class ParameterResolver {
             }
         }
 
-        if (count($valueOptions) !== 1) {
+        if (count($valueOptions) > 1) {
             throw new ParameterResolvesToMultipleTypesException($reflectionParameter->getName(), $value, $valueOptions);
         }
 
