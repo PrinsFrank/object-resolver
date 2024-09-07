@@ -35,7 +35,7 @@ enum Casing {
 
     public static function forString(string $string): ?self {
         $possibleCasings = self::allForString($string);
-        if (count($possibleCasings) === 0) {
+        if (count($possibleCasings) === 1) {
             return $possibleCasings[0];
         }
 
