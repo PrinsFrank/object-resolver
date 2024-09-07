@@ -27,7 +27,7 @@ class ClassResolver implements TypeResolver {
      */
     #[Override]
     public function resolveValue(string $type, mixed $value, ObjectResolver $objectResolver): ?object {
-        if (is_array($value) === false || array_is_list($value)) {
+        if (class_exists($type) === false || is_array($value) === false || array_is_list($value)) {
             return null;
         }
 

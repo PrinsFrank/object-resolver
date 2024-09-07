@@ -37,7 +37,7 @@ readonly class ObjectResolver {
     /**
      * @template T of object
      * @param class-string<T> $FQN
-     * @param array<string, mixed> $params
+     * @param array<mixed> $params
      * @throws ObjectResolverException
      * @return T
      */
