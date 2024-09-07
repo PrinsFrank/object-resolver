@@ -41,7 +41,7 @@ readonly class ParameterResolver {
         }
 
         $valueOptions = [];
-        foreach (explode('|', $parameterType->__toString()) as $allowedType) {
+        foreach (explode('|', ltrim($parameterType->__toString(), '?')) as $allowedType) {
             foreach ($this->typeResolverProvider->all() as $typeResolverFQN) {
                 /** @var TypeResolver<mixed> $typeResolver */
                 $typeResolver = new $typeResolverFQN();
