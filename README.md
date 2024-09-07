@@ -61,12 +61,23 @@ We somehow need to automatically wire the incoming request based on the request 
 If there is a container available, we can then add a dynamic abstract concrete binding:
 
 ```php
-$resolvedSet->add(
-    new AbstractConcrete(
-        $identifier,
-        fn (ObjectResolver $objectResolver, Request $request) => $objectResolver->resolveFromParams($identifier, $request->params()),
-    )
-);
+final class RequestObjectServiceProvider implements ServiceProviderInterface {
+    #[Override]
+    public function provides(string $identifier): bool {
+        return is_a($identifier, RequestObject::class, true);
+    }
+
+    /** @throws InvalidArgumentException */
+    #[Override]
+    public function register(string $identifier, DefinitionSet $resolvedSet): void {
+        $resolvedSet->add(
+            new AbstractConcrete(
+                $identifier,
+                fn (ObjectResolver $objectResolver, Request $request) => $objectResolver->resolveFromParams($identifier, $request->params()),
+            )
+        );
+    }
+}
 ```
 
 ## Casing conversion
@@ -76,12 +87,23 @@ Because code conventions between different tech stacks might differ, it's possib
 Let's say there's a form in HTML that has name `user_name`, but in the backend our model has parameter `$userName`. This can be automatically converted, by supplying the parameters `$enforcePropertyNameCasing` and `$convertFromParamKeyCasing`:
 
 ```php
-$resolvedSet->add(
-    new Concrete(
-        $identifier,
-        fn () => new ObjectResolver(Casing::camel, Casing::snake)
-    )
-);
+final class ObjectResolverServiceProvider implements ServiceProviderInterface {
+    #[Override]
+    public function provides(string $identifier): bool {
+        return $identifier === ObjectResolver::class;
+    }
+
+    /** @throws InvalidArgumentException */
+    #[Override]
+    public function register(string $identifier, DefinitionSet $resolvedSet): void {
+        $resolvedSet->add(
+            new Concrete(
+                $identifier,
+                fn () => new ObjectResolver(Casing::camel, Casing::snake)
+            )
+        );
+    }
+}
 ```
 
 ## Json from APIs etc
