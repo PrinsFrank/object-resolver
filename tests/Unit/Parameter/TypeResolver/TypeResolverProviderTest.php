@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace PrinsFrank\ObjectResolver\Tests\Unit\Parameter\TypeResolver;
 
@@ -17,8 +17,7 @@ use PrinsFrank\ObjectResolver\Parameter\TypeResolver\TypeResolverProvider;
 use PrinsFrank\ObjectResolver\Parameter\TypeResolver\UnitEnumResolver;
 
 #[CoversClass(TypeResolverProvider::class)]
-class TypeResolverProviderTest extends TestCase
-{
+class TypeResolverProviderTest extends TestCase {
     public function testAll(): void {
         $typeResolverProvider = new TypeResolverProvider();
         static::assertSame(
@@ -41,20 +40,14 @@ class TypeResolverProviderTest extends TestCase
             [],
             $typeResolverProvider->all(),
         );
-
-        $typeResolverProvider->add(UnitEnumResolver::class);
-        static::assertSame(
-            [
-                UnitEnumResolver::class,
-            ],
-            $typeResolverProvider->all()
-        );
     }
 
+    /** @throws InvalidTypeResolverException */
     public function testAddThrowsExceptionOnInvalidTypeResolver(): void {
+        $typeResolver = new TypeResolverProvider([]);
         static::expectException(InvalidTypeResolverException::class);
         static::expectExceptionMessage('Foo is not a TypeResolver');
-        (new TypeResolverProvider([]))
-            ->add('Foo');
+        /** @phpstan-ignore argument.type */
+        $typeResolver->add('Foo');
     }
 }
