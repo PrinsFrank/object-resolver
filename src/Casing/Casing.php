@@ -23,7 +23,9 @@ enum Casing {
             flags: PREG_SPLIT_NO_EMPTY
         );
         if ($parts === false) {
+            /** @codeCoverageIgnoreStart */
             throw new ShouldNotHappenException();
+            /** @codeCoverageIgnoreEnd */
         }
 
         $parts = array_map(fn (string $part) => strtolower($part), $parts);
