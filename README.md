@@ -61,19 +61,26 @@ We somehow need to automatically wire the incoming request based on the request 
 If there is a container available, we can then add a dynamic abstract concrete binding:
 
 ```php
-final class RequestObjectServiceProvider implements ServiceProviderInterface {
-    #[Override]
+final class RequestDataProvider implements ServiceProviderInterface {
     public function provides(string $identifier): bool {
-        return is_a($identifier, RequestObject::class, true);
+        return is_a($identifier, RequestData::class, true);
     }
 
-    /** @throws InvalidArgumentException */
-    #[Override]
     public function register(string $identifier, DefinitionSet $resolvedSet): void {
         $resolvedSet->add(
-            new AbstractConcrete(
+            new Concrete(
                 $identifier,
-                fn (ObjectResolver $objectResolver, Request $request) => $objectResolver->resolveFromParams($identifier, $request->params()),
+                static function (ObjectResolver $objectResolver, ServerRequestInterface $serverRequest) use ($identifier) {
+                    $requestData = match ($serverRequest->getMethod()) {
+                        'GET' => $serverRequest->getQueryParams(),
+                        'POST', 
+                        'PATCH', 
+                        'PUT' => $serverRequest->getParsedBody(),
+                        default => [],
+                    };
+
+                    return $objectResolver->resolveFromParams($identifier, $requestData);
+                },
             )
         );
     }
