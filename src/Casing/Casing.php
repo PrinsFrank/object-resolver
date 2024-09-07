@@ -12,11 +12,21 @@ enum Casing {
     case upper;
 
     public static function convertTo(string $string, self $to): string {
-        $parts = preg_split('/([-_ ]+)|(?=[A-Z])/', $string, flags: PREG_SPLIT_NO_EMPTY);
+        $parts = preg_split(
+            match (self::forString($string)) {
+                self::kebab => '/[-]+/',
+                self::snake, self::upper => '/([_]+)/',
+                self::camel, self::pascal => '/(?=[A-Z])/',
+                null => '/([-_ ]+)|(?=[A-Z])/'
+            },
+            $string,
+            flags: PREG_SPLIT_NO_EMPTY
+        );
         if ($parts === false) {
             throw new ShouldNotHappenException();
         }
 
+        $parts = array_map(fn(string $part) => strtolower($part), $parts);
         $parts = match($to) {
             self::camel => self::partsToCamel($parts),
             self::pascal => array_map(fn (string $part) => ucfirst($part), $parts),
