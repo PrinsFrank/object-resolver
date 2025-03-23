@@ -8,13 +8,14 @@ class TypeResolverProvider {
     /** @param array<class-string<TypeResolver<mixed>>> $typeResolvers */
     public function __construct(
         private array $typeResolvers = [
-            StringBackedEnumResolver::class,
             BoolResolver::class,
+            ClassResolver::class,
             DateTimeImmutableResolver::class,
             DateTimeResolver::class,
             FloatResolver::class,
+            IntBackedEnumResolver::class,
             IntResolver::class,
-            ClassResolver::class,
+            StringBackedEnumResolver::class,
             StringResolver::class,
             UnitEnumResolver::class,
         ]

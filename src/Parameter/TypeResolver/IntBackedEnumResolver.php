@@ -11,12 +11,12 @@ use ReflectionEnum;
 use ReflectionException;
 
 /** @implements TypeResolver<BackedEnum> */
-class StringBackedEnumResolver implements TypeResolver {
+class IntBackedEnumResolver implements TypeResolver {
     /** @throws ReflectionException */
     #[Override]
     public function acceptsType(string $type): bool {
         return is_a($type, BackedEnum::class, true)
-            && (string) (new ReflectionEnum($type))->getBackingType() === 'string';
+            && (string) (new ReflectionEnum($type))->getBackingType() === 'int';
     }
 
     /**
@@ -26,7 +26,7 @@ class StringBackedEnumResolver implements TypeResolver {
     #[Override]
     public function resolveValue(string $type, mixed $value, ObjectResolver $objectResolver): ?BackedEnum {
         if (is_a($type, BackedEnum::class, true) === false
-            || (string) (new ReflectionEnum($type))->getBackingType() !== 'string') {
+            || (string) (new ReflectionEnum($type))->getBackingType() !== 'int') {
             throw new ShouldNotHappenException();
         }
 
@@ -34,16 +34,16 @@ class StringBackedEnumResolver implements TypeResolver {
             return $value;
         }
 
-        if (is_string($value) === false) {
+        if (is_int($value) === false && is_string($value) === false) {
             return null;
         }
 
-        if (($enumValue = $type::tryFrom($value)) !== null) {
+        if ((string)(int) $value === $value && ($enumValue = $type::tryFrom((int) $value)) !== null) {
             return $enumValue;
         }
 
         try {
-            return \PrinsFrank\Enums\BackedEnum::fromName($type, $value);
+            return \PrinsFrank\Enums\BackedEnum::fromName($type, (string) $value);
         } catch (EnumException) {
             return null;
         }
