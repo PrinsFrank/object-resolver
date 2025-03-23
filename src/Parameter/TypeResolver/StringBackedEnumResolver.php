@@ -7,18 +7,21 @@ use Override;
 use PrinsFrank\Enums\Exception\EnumException;
 use PrinsFrank\ObjectResolver\Exception\ShouldNotHappenException;
 use PrinsFrank\ObjectResolver\ObjectResolver;
+use ReflectionEnum;
 
 /** @implements TypeResolver<BackedEnum> */
-class BackedEnumResolver implements TypeResolver {
+class StringBackedEnumResolver implements TypeResolver {
     #[Override]
     public function acceptsType(string $type): bool {
-        return is_a($type, BackedEnum::class, true);
+        return is_a($type, BackedEnum::class, true)
+            && (string) (new ReflectionEnum($type))->getBackingType() === 'string';
     }
 
     /** @param class-string<BackedEnum>|string $type */
     #[Override]
     public function resolveValue(string $type, mixed $value, ObjectResolver $objectResolver): ?BackedEnum {
-        if (is_a($type, BackedEnum::class, true) === false) {
+        if (is_a($type, BackedEnum::class, true) === false
+            || (string) (new ReflectionEnum($type))->getBackingType() !== 'string') {
             throw new ShouldNotHappenException();
         }
 
@@ -26,7 +29,7 @@ class BackedEnumResolver implements TypeResolver {
             return $value;
         }
 
-        if (is_int($value) === false && is_string($value) === false) {
+        if (is_string($value) === false) {
             return null;
         }
 
