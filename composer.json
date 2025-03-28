@@ -14,7 +14,7 @@
         }
     },
     "require": {
-        "php": "~8.3",
+        "php": "^8.2",
         "prinsfrank/enums": "^1.2"
     },
     "require-dev": {
