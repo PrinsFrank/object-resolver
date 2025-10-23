@@ -12,11 +12,13 @@ class TypeResolverProvider {
             ClassResolver::class,
             DateTimeImmutableResolver::class,
             DateTimeResolver::class,
+            FalseResolver::class,
             FloatResolver::class,
             IntBackedEnumResolver::class,
             IntResolver::class,
             StringBackedEnumResolver::class,
             StringResolver::class,
+            TrueResolver::class,
             UnitEnumResolver::class,
         ]
     ) {

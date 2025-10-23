@@ -5,6 +5,7 @@ namespace PrinsFrank\ObjectResolver\Tests\Unit\Parameter\TypeResolver;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use PrinsFrank\ObjectResolver\Exception\InvalidTypeResolverException;
+use PrinsFrank\ObjectResolver\Parameter\TypeResolver\FalseResolver;
 use PrinsFrank\ObjectResolver\Parameter\TypeResolver\IntBackedEnumResolver;
 use PrinsFrank\ObjectResolver\Parameter\TypeResolver\StringBackedEnumResolver;
 use PrinsFrank\ObjectResolver\Parameter\TypeResolver\BoolResolver;
@@ -14,6 +15,7 @@ use PrinsFrank\ObjectResolver\Parameter\TypeResolver\DateTimeResolver;
 use PrinsFrank\ObjectResolver\Parameter\TypeResolver\FloatResolver;
 use PrinsFrank\ObjectResolver\Parameter\TypeResolver\IntResolver;
 use PrinsFrank\ObjectResolver\Parameter\TypeResolver\StringResolver;
+use PrinsFrank\ObjectResolver\Parameter\TypeResolver\TrueResolver;
 use PrinsFrank\ObjectResolver\Parameter\TypeResolver\TypeResolverProvider;
 use PrinsFrank\ObjectResolver\Parameter\TypeResolver\UnitEnumResolver;
 
@@ -27,11 +29,13 @@ class TypeResolverProviderTest extends TestCase {
                 ClassResolver::class,
                 DateTimeImmutableResolver::class,
                 DateTimeResolver::class,
+                FalseResolver::class,
                 FloatResolver::class,
                 IntBackedEnumResolver::class,
                 IntResolver::class,
                 StringBackedEnumResolver::class,
                 StringResolver::class,
+                TrueResolver::class,
                 UnitEnumResolver::class,
             ],
             $typeResolverProvider->all(),
